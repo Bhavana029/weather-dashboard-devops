@@ -47,5 +47,24 @@ pipeline {
                 }
             }
         }
+
+        stage('Deploy to EC2') {
+            steps {
+                sh '''
+                    docker pull bhavana029/weather-dashboard-devops:v1
+
+                    docker stop weather-dashboard || true
+                    docker rm weather-dashboard || true
+
+                    docker run -d \
+                        --name weather-dashboard \
+                        --restart unless-stopped \
+                        -p 80:80 \
+                        bhavana029/weather-dashboard-devops:v1
+
+                    docker ps
+                '''
+            }
+        }
     }
 }
